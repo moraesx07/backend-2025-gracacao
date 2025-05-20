@@ -1,0 +1,21 @@
+{
+  "name": "backend-2025-gracacao",
+  "version": "1.0.0",
+  "description": "Backend Gravação de Vídeo Aula",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node src/index.js"
+  },
+  "keywords": [
+    "backend",
+    "video",
+    "aula",
+    "gravação"
+  ],
+  "author": "TecFour",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
