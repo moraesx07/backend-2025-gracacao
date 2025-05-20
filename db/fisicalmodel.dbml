@@ -1,0 +1,42 @@
+// Docs: https://dbml.dbdiagram.io/docs
+Table users {
+  id integer [primary key, increment]
+  username text [not null]
+  email text [not null, unique]
+  password text [default: '123456']
+  role varchar [default: 'user',  note: 'admin/parcial/comum']
+  photo text [note: 'link da foto']
+  created_at timestamp [default: 'CURRENT_TIMESTAMP']
+  updated_at timestamp
+
+  indexes {
+    (email, password) [name: 'login']
+    (username) [name: 'name']
+    (email) [unique, name: 'unique_email']
+  }
+}
+
+Table payments {
+  id integer [primary key, increment]
+  user_id intereger [note: 'quem realizou o pagamento']
+  user_control intereger [note: 'usuário que criou o registro']
+  value real [not null]
+  receipt text [not null]
+  obs text
+  paymentdate timestamp [not null]
+  verified boolean [default: false, note: 'verificado']
+  photo text [note: 'link da foto']
+  created_at timestamp [default: 'CURRENT_TIMESTAMP']
+  updated_at timestamp
+
+  indexes {
+    (paymentdate) [name: 'all payment of date']
+    (value) [name: 'range of value']
+    (paymentdate, value) [note: 'all payment beetweend date and value']
+  }
+}
+
+
+
+
+Ref user_payment: payments.user_id > users.id // many-to-one
