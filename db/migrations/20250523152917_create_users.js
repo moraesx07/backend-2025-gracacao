@@ -16,7 +16,6 @@ export function up(knex) {
     // Índices personalizados
     table.index(['email', 'password'], 'login');
     table.index(['username'], 'name');
-    table.unique('email', {indexName: 'unique_email'});
    });
 }
 
