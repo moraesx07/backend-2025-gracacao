@@ -2,8 +2,6 @@ import {DatabaseSync} from "node:sqlite";
 
 import {dbPath} from "../src/utils/dbpath.js"
 
-console.log("caminho importado:" + dbPath);
-
 let db = null;
 
 try {
