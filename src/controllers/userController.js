@@ -1,4 +1,4 @@
-import { findAll } from "../models/userModel.js";
+import { findAll, create } from "../models/userModel.js";
 
 export const getUsers = async (req, res) => {
     try {
@@ -12,17 +12,11 @@ export const getUsers = async (req, res) => {
 
 export const createUser = async (req, res) => {
     try {
-        const userData = req.body; // Obter os dados do usuário do corpo da requisição
-        const result = await create(userData); // Chamar a função create do modelo
-        res.status(201).json({ message: "User created successfully", userId: result.lastInsertRowid });// O lastInsertRowid é usado para obter o ID do usuário recém-criado
+        const userData = req.body;
+        const result = await create(userData);
+        res.status(201).json({ message: "User created successfully", userId: result.lastInsertRowid });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.status(500).json({ message: "Internal Server Error - controller" });
-    }
-}
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: "Internal Server Error - controller" });
-        
     }
 }
