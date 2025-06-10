@@ -36,3 +36,27 @@ export async function remove(id) {
         throw new Error("error deleting user: "+ error.message);
     }
 }
+
+export async function update(id, userData) {
+    try {
+        const query = "UPDATE users SET username = ?, email = ? WHERE id = ?;";
+        const statement = database.prepare(query);
+        const result = statement.run(userData.username, userData.email, id);
+        return result;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Error updating user: " + error.message);
+    }
+}
+
+export async function updateRole(id, role) {
+    try {
+        const query = "UPDATE users SET role = ? WHERE id = ?;";
+        const statement = database.prepare(query);
+        const result = statement.run(role, id);
+        return result;
+    } catch (error) {
+        console.log(error);
+        throw new Error("Error updating user: " + error.message);
+    }
+}
