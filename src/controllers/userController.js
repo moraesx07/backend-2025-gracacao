@@ -1,4 +1,4 @@
-import { findAll, create } from "../models/userModel.js";
+import { findAll, create, remove } from "../models/userModel.js";
 
 export const getUsers = async (req, res) => {
     try {
@@ -18,5 +18,18 @@ export const createUser = async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal Server Error - controller" });
+    }
+}
+
+export const deleteUser = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const result = await remove(id);
+        if (result.changes === 0) {
+            return res.status(404).json({ message: "User not found"})
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal Server Error - controller"});
     }
 }
