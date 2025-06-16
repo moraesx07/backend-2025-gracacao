@@ -4,7 +4,7 @@ import {z} from "zod"
 const userSchema = z.object({
     username: z.string().min(1, "Nome de usuário é obrigatório"),
     email: z.string().email("E-mail inválido"),
-    passwoerd: z.string().optional(),
+    password: z.string().optional(),
     role: z.enum([ "parcial", "user"]).optional(),
     photo: z.string().optional(),
 });
