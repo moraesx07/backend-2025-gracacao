@@ -20,7 +20,7 @@ export async function create(userData) {
         const result = statement.run(userData.username, userData.email);
         return result;
     } catch (error) {
-        console.log(error);
+         console.log(error);
         throw new Error("Error creating user: " + error.message);
     } 
 }

@@ -1,5 +1,6 @@
 import database from '../../db/connection.js';
 
+// Irrigadores
 export async function findAll() {
     const statement = database.prepare("SELECT * FROM irrigadores;");
     return statement.all();
@@ -22,4 +23,17 @@ export async function update(id, data) {
 export async function remove(id) {
     const statement = database.prepare("DELETE FROM irrigadores WHERE id = ?;");
     return statement.run(id);
+}
+
+// Controles de Irrigação
+export async function findAllControles() {
+    const statement = database.prepare("SELECT * FROM controles_irrigacao;");
+    return statement.all();
+}
+
+export async function createControle(data) {
+    const statement = database.prepare(
+        "INSERT INTO controles_irrigacao (sistema_id, status, data_controle) VALUES (?, ?, ?);"
+    );
+    return statement.run(data.sistema_id, data.status, data.data_controle);
 }
