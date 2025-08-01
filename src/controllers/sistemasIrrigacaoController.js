@@ -9,12 +9,12 @@ const SistemaIrrigacaoSchema = z.object({
 
 export const createSistemaIrrigacao = async (req, res) => {
   try {
-    SistemaIrrigacaoSchema.parse(req.body);
-    const result = await createSistema(req.body);
+    const sistemaData = SistemaIrrigacaoSchema.parse(req.body);
+    const result = await createSistema(sistemaData);
     res.status(201).json({
       message: "Sistema de irrigação criado com sucesso!",
       id: result.lastInsertRowid,
-      data: req.body,
+      data: sistemaData,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -28,14 +28,14 @@ export const createSistemaIrrigacao = async (req, res) => {
 export const updateSistemaIrrigacao = async (req, res) => {
   const { id } = req.params;
   try {
-    SistemaIrrigacaoSchema.parse(req.body);
-    const result = await updateSistema(id, req.body);
+    const sistemaData = SistemaIrrigacaoSchema.parse(req.body);
+    const result = await updateSistema(id, sistemaData);
     if (result.changes === 0) {
       return res.status(404).json({ message: "Sistema de irrigação não encontrado" });
     }
     res.status(200).json({
       message: "Sistema de irrigação atualizado com sucesso!",
-      data: req.body,
+      data: sistemaData,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

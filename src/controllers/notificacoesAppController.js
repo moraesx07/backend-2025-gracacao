@@ -15,12 +15,12 @@ const NotificacaoSchema = z.object({
 
 export const createNotificacaoApp = async (req, res) => {
   try {
-    NotificacaoSchema.parse(req.body);
-    const result = await createNotificacao(req.body);
+    const notificacaoData = NotificacaoSchema.parse(req.body);
+    const result = await createNotificacao(notificacaoData);
     res.status(201).json({
       message: "Notificação criada com sucesso!",
       id: result.lastInsertRowid,
-      data: req.body,
+      data: notificacaoData,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -46,9 +46,9 @@ export const getNotificacoesApp = async (req, res) => {
 
 export const patchNotificacaoApp = async (req, res) => {
   try {
-    NotificacaoSchema.parse(req.body);
     const { id } = req.params;
-    const result = await updateNotificacao(id, req.body);
+    const notificacaoData = NotificacaoSchema.parse(req.body);
+    const result = await updateNotificacao(id, notificacaoData);
     if (result.changes === 0) {
       return res.status(404).json({ message: "Notificação não encontrada" });
     }

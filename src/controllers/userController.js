@@ -41,6 +41,9 @@ export const createUser = async (req, res) => {
         userId: result.lastInsertRowid,
       });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ message: "Erro de validação", details: error.errors });
+    }
     console.error(error);
     res.status(500).json({ message: "Internal Server Error - controller" });
   }
@@ -70,6 +73,9 @@ export const updateUser = async (req, res) => {
     }
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ message: "Erro de validação", details: error.errors });
+    }
     console.log(error);
     res.status(500).json({ message: "Internal Server Error - controller" });
   }
@@ -85,6 +91,9 @@ export const updateUserRole = async (req, res) => {
     }
     res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return res.status(400).json({ message: "Erro de validação", details: error.errors });
+    }
     console.log(error);
     res.status(500).json({ message: "Internal Server Error - controller" });
   }

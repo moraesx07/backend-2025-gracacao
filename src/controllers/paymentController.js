@@ -1,4 +1,14 @@
 import { findAll, create, update, remove } from "../models/paymentModel.js";
+import { z } from "zod";
+
+// Schema de validação para pagamentos
+const PaymentSchema = z.object({
+    user_id: z.number().min(1, "ID do usuário é obrigatório"),
+    value: z.number().positive("Valor deve ser positivo"),
+    receipt: z.string().min(1, "Comprovante é obrigatório"),
+    paymentdate: z.string().datetime({ message: "Data inválida" }),
+    status: z.enum(["pendente", "aprovado", "rejeitado"]).optional(),
+});
 
 // Buscar todos os pagamentos
 export const getPayments = async (req, res) => {
@@ -14,19 +24,14 @@ export const getPayments = async (req, res) => {
 // Criar pagamento
 export const createPayment = async (req, res) => {
     try {
-        const paymentData = req.body;
-        if (
-            !paymentData.user_id ||
-            !paymentData.value ||
-            !paymentData.receipt ||
-            !paymentData.paymentdate
-        ) {
-            return res.status(400).json({ message: "Campos obrigatórios faltando" });
-        }
+        const paymentData = PaymentSchema.parse(req.body);
         const result = await create(paymentData);
         res.status(201).json({ message: "Pagamento criado com sucesso", paymentId: result.lastInsertRowid });
     } catch (error) {
-        console.error("Erro detalhado:", error); // Log detalhado do erro
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ message: "Erro de validação", details: error.errors });
+        }
+        console.error("Erro detalhado:", error);
         res.status(500).json({ message: "Erro ao criar pagamento" });
     }
 };
@@ -38,14 +43,17 @@ export const createPayment = async (req, res) => {
 export const updatePayment = async (req, res) => {
     try {
         const { id } = req.params;
-        const paymentData = req.body;
+        const paymentData = PaymentSchema.parse(req.body);
         const result = await update(id, paymentData);
         if (result.changes === 0) {
             return res.status(404).json({ message: "Pagamento não encontrado" });
         }
         res.status(200).json({ message: "Pagamento atualizado com sucesso" });
     } catch (error) {
-        console.error("Erro detalhado:", error); // Adicione esta linha
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ message: "Erro de validação", details: error.errors });
+        }
+        console.error("Erro detalhado:", error);
         res.status(500).json({ message: "Internal Server Error - controller" });
     }
 };

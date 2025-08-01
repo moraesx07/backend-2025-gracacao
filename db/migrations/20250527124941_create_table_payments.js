@@ -20,6 +20,10 @@ export function up(knex) {
     table.index(['paymentdate'], 'all_payment_of_date');
     table.index(['value'], 'range_of_value');
     table.index(['paymentdate', 'value'], 'payment_by_date_and_value');
+    
+    // Foreign Keys
+    table.foreign('user_id').references('id').inTable('users').onDelete('CASCADE');
+    table.foreign('user_control').references('id').inTable('users').onDelete('SET NULL');
   });
 }
 

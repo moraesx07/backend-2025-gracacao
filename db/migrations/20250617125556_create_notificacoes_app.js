@@ -9,6 +9,9 @@ export function up(knex) {
     table.string('mensagem').notNullable();
     table.timestamp('data_notificacao').notNullable();
     table.boolean('lida').defaultTo(false);
+    
+    // Foreign Key para garantir integridade
+    table.foreign('usuario_id').references('id').inTable('users').onDelete('CASCADE');
   });
 }
 export function down(knex) {

@@ -9,6 +9,9 @@ export function up(knex) {
     table.string('tipo_mensagem').notNullable();
     table.text('payload').notNullable();
     table.timestamp('data_envio').notNullable();
+    
+    // Foreign Key
+    table.foreign('sistema_id').references('id').inTable('sistemas_irrigacao').onDelete('CASCADE');
   });
 }
 export function down(knex) {

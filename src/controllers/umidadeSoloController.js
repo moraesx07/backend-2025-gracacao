@@ -1,6 +1,13 @@
 import { findAll, create, update, remove, findAllLeituras, createLeitura as createLeituraModel, updateLeitura, removeLeitura } from "../models/umidadeSoloModel.js";
 import { z } from "zod";
 
+// Schema de validação para umidade do solo
+const UmidadeSoloSchema = z.object({
+    id_sensor: z.number().min(1, "ID do sensor é obrigatório"),
+    umidade: z.number().min(0).max(100, "Umidade deve ser entre 0 e 100"),
+    data_medicao: z.string().datetime({ message: "Data inválida" }).optional(),
+});
+
 // CRUD umidade_solo
 export const getUmidades = async (req, res) => {
     try {
@@ -14,9 +21,13 @@ export const getUmidades = async (req, res) => {
 
 export const createUmidade = async (req, res) => {
     try {
-        const result = await create(req.body);
+        const umidadeData = UmidadeSoloSchema.parse(req.body);
+        const result = await create(umidadeData);
         res.status(201).json({ message: "Umidade registrada", id: result.lastInsertRowid });
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ message: "Erro de validação", details: error.errors });
+        }
         console.error(error);
         res.status(500).json({ message: "Erro ao registrar umidade" });
     }
@@ -25,10 +36,14 @@ export const createUmidade = async (req, res) => {
 export const updateUmidade = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await update(id, req.body);
+        const umidadeData = UmidadeSoloSchema.parse(req.body);
+        const result = await update(id, umidadeData);
         if (result.changes === 0) return res.status(404).json({ message: "Registro não encontrado" });
         res.status(200).json({ message: "Umidade atualizada" });
     } catch (error) {
+        if (error instanceof z.ZodError) {
+            return res.status(400).json({ message: "Erro de validação", details: error.errors });
+        }
         console.error(error);
         res.status(500).json({ message: "Erro ao atualizar umidade" });
     }
@@ -55,12 +70,12 @@ const LeituraUmidadeSoloSchema = z.object({
 
 export const createLeitura = async (req, res) => {
   try {
-    LeituraUmidadeSoloSchema.parse(req.body);
-    const result = await createLeituraModel(req.body);
+    const leituraData = LeituraUmidadeSoloSchema.parse(req.body);
+    const result = await createLeituraModel(leituraData);
     res.status(201).json({
       message: "Leitura de umidade criada com sucesso!",
       id: result.lastInsertRowid,
-      data: req.body,
+      data: leituraData,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -86,9 +101,9 @@ export const getLeituras = async (req, res) => {
 
 export const patchLeitura = async (req, res) => {
   try {
-    LeituraUmidadeSoloSchema.parse(req.body);
     const { id } = req.params;
-    const result = await updateLeitura(id, req.body);
+    const leituraData = LeituraUmidadeSoloSchema.parse(req.body);
+    const result = await updateLeitura(id, leituraData);
     if (result.changes === 0) {
       return res.status(404).json({ message: "Leitura não encontrada" });
     }

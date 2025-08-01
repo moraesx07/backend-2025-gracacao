@@ -15,12 +15,12 @@ const MensagemMqttSchema = z.object({
 
 export const createMensagemMqtt = async (req, res) => {
   try {
-    MensagemMqttSchema.parse(req.body);
-    const result = await createMensagem(req.body);
+    const mensagemData = MensagemMqttSchema.parse(req.body);
+    const result = await createMensagem(mensagemData);
     res.status(201).json({
       message: "Mensagem MQTT criada com sucesso!",
       id: result.lastInsertRowid,
-      data: req.body,
+      data: mensagemData,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -43,9 +43,9 @@ export const getMensagens = async (req, res) => {
 
 export const patchMensagemMqtt = async (req, res) => {
   try {
-    MensagemMqttSchema.parse(req.body);
     const { id } = req.params;
-    const result = await updateMensagem(id, req.body);
+    const mensagemData = MensagemMqttSchema.parse(req.body);
+    const result = await updateMensagem(id, mensagemData);
     if (result.changes === 0) {
       return res.status(404).json({ message: "Mensagem não encontrada" });
     }

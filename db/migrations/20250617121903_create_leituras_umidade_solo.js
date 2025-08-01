@@ -8,6 +8,9 @@ export function up(knex) {
     table.integer('sistema_id').notNullable();
     table.decimal('nivel_umidade', 5, 2).notNullable();
     table.timestamp('data_leitura').notNullable();
+    
+    // Foreign Key
+    table.foreign('sistema_id').references('id').inTable('sistemas_irrigacao').onDelete('CASCADE');
   });
 }
 

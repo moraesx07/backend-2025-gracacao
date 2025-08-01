@@ -8,6 +8,9 @@ export function up(knex) {
     table.integer('sistema_id').notNullable();
     table.enum('status', ['ligado', 'desligado']).notNullable();
     table.timestamp('data_controle').notNullable();
+    
+    // Foreign Key
+    table.foreign('sistema_id').references('id').inTable('sistemas_irrigacao').onDelete('CASCADE');
   });
 }
 
